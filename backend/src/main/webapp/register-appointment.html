@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register Appointment - Sunrise Dental Clinic</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="app-wrapper">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-icon">🦷</div>
+                <div class="logo-text">
+                    <h1>Sunrise Dental</h1>
+                    <span>Management System</span>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="dashboard.html" class="nav-item">
+                    <span class="icon">📊</span>
+                    <span>Dashboard</span>
+                </a>
+                <a href="register-appointment.html" class="nav-item active">
+                    <span class="icon">📅</span>
+                    <span>New Appointment</span>
+                </a>
+                <a href="search-appointment.html" class="nav-item">
+                    <span class="icon">🔍</span>
+                    <span>Search & Manage</span>
+                </a>
+                <a href="bill.html" class="nav-item">
+                    <span class="icon">💳</span>
+                    <span>Billing & Receipts</span>
+                </a>
+                <a href="reports.html" id="nav-reports" class="nav-item">
+                    <span class="icon">📈</span>
+                    <span>Executive Reports</span>
+                </a>
+                <a href="help.html" class="nav-item">
+                    <span class="icon">❓</span>
+                    <span>Help & Guide</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="user-profile">
+                    <div class="user-avatar">SD</div>
+                    <div class="user-info">
+                        <span class="user-name">Loading...</span>
+                        <span class="user-role">Staff</span>
+                    </div>
+                </div>
+                <button id="btnLogout" class="btn-logout" title="Sign Out">🚪</button>
+            </div>
+        </aside>
+
+        <!-- Main Workspace -->
+        <main class="main-wrapper">
+            <header class="top-header">
+                <div class="page-title">
+                    <h2>Register New Appointment</h2>
+                    <p>Enter patient details, select clinical procedure, and assign a dentist.</p>
+                </div>
+                <div class="header-actions">
+                    <a href="search-appointment.html" class="btn btn-secondary btn-sm">🔍 Search Existing</a>
+                </div>
+            </header>
+
+            <div class="content-body">
+                <div id="alertContainer"></div>
+
+                <div class="grid-cols-3">
+                    <!-- Booking Form (2 Columns) -->
+                    <div class="card" style="grid-column: span 2;">
+                        <div class="card-header">
+                            <h3 class="card-title">Patient Intake & Scheduling Form</h3>
+                        </div>
+
+                        <form id="bookingForm">
+                            <h4 style="font-size:0.95rem;color:#0284c7;margin-bottom:16px;text-transform:uppercase;letter-spacing:0.05em;">1. Patient Demographics</h4>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label" for="patientName">Full Patient Name *</label>
+                                    <input type="text" id="patientName" class="form-control" placeholder="e.g., Malith Shehan" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label" for="patientContact">Contact Number (Mobile) *</label>
+                                    <input type="tel" id="patientContact" class="form-control" placeholder="e.g., 0771234567" required>
+                                    <span class="form-hint">Used for automated SMS appointment notifications</span>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label" for="patientAddress">Residential Address *</label>
+                                    <input type="text" id="patientAddress" class="form-control" placeholder="e.g., No 45, Galle Road, Colombo 03" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label" for="patientEmail">Email Address (Optional)</label>
+                                    <input type="email" id="patientEmail" class="form-control" placeholder="patient@example.com">
+                                </div>
+                            </div>
+
+                            <h4 style="font-size:0.95rem;color:#0284c7;margin:24px 0 16px;text-transform:uppercase;letter-spacing:0.05em;">2. Clinical Selection & Timing</h4>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label" for="dentistId">Attending Dental Specialist *</label>
+                                    <select id="dentistId" class="form-select" required>
+                                        <option value="">Loading dentists...</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label" for="treatmentId">Treatment / Clinical Procedure *</label>
+                                    <select id="treatmentId" class="form-select" required>
+                                        <option value="">Loading treatments...</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label" for="appointmentDate">Appointment Date *</label>
+                                    <input type="date" id="appointmentDate" class="form-control" required>
+                                    <span class="form-hint">Cannot be in the past</span>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label" for="appointmentTime">Appointment Time *</label>
+                                    <input type="time" id="appointmentTime" class="form-control" min="08:00" max="17:00" required>
+                                    <span class="form-hint">Clinic hours: 08:00 to 17:00</span>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="notes">Clinical Notes / Patient Symptoms</label>
+                                <textarea id="notes" class="form-control" placeholder="Enter any specific tooth ache complaints, allergy notes, or medical history..."></textarea>
+                            </div>
+
+                            <button type="submit" id="btnSubmitBooking" class="btn btn-primary btn-block" style="padding:14px;">
+                                Confirm & Schedule Appointment
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Cost Estimate & Policy Card (1 Column) -->
+                    <div>
+                        <div class="card" style="background:#f0f9ff;border-color:#bae6fd;">
+                            <h3 class="card-title" style="color:#0369a1;margin-bottom:12px;">💰 Estimated Bill Preview</h3>
+                            <p style="font-size:0.875rem;color:#0c4a6e;margin-bottom:20px;">
+                                Total is computed dynamically from dentist consultation fee + treatment cost.
+                            </p>
+
+                            <div style="background:#ffffff;padding:20px;border-radius:var(--radius-md);border:1px solid #e0f2fe;text-align:center;">
+                                <span style="font-size:0.8rem;color:#64748b;text-transform:uppercase;font-weight:700;">Estimated Total</span>
+                                <div id="estimatedCostDisplay" style="font-size:1.75rem;font-weight:800;color:#0284c7;margin-top:6px;">
+                                    LKR 0.00
+                                </div>
+                            </div>
+
+                            <div style="margin-top:20px;font-size:0.825rem;color:#0369a1;line-height:1.6;">
+                                <strong>Clinic Booking Rules:</strong>
+                                <ul style="padding-left:18px;margin-top:8px;">
+                                    <li>Sequential ID (<code>SDC-YYYY-XXXX</code>) is auto-generated.</li>
+                                    <li>Double-booking for the same dentist is blocked by DB triggers.</li>
+                                    <li>Automated SMS notification dispatched on confirmation.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/validation.js"></script>
+    <script src="js/appointment.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const user = await Auth.requireAuth();
+            if (!user) return;
+
+            // Set default date to today
+            const today = new Date().toISOString().split('T')[0];
+            const dateInput = document.getElementById('appointmentDate');
+            if (dateInput) {
+                dateInput.min = today;
+                dateInput.value = today;
+            }
+
+            // Load catalogs
+            await AppointmentManager.loadFormData();
+
+            // Setup listeners for live cost calculation
+            document.getElementById('dentistId').addEventListener('change', () => AppointmentManager.updateCostPreview());
+            document.getElementById('treatmentId').addEventListener('change', () => AppointmentManager.updateCostPreview());
+
+            // Handle submit
+            document.getElementById('bookingForm').addEventListener('submit', (e) => AppointmentManager.handleBookingSubmit(e));
+        });
+    </script>
+</body>
+</html>

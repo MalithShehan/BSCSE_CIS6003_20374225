@@ -13,7 +13,7 @@ public class ValidationUtil {
 
     // Regex Patterns
     private static final Pattern PHONE_PATTERN = Pattern.compile("^[0-9+\\s\\-\\(\\)]{9,20}$");
-    private static final Pattern EMAIL_PATTERN = Pattern.compile("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$");
+    private static final Pattern EMAIL_PATTERN = Pattern.compile("^[A-Za-z0-9+_.-]+@[A-Za-z0-9]+([.-][A-Za-z0-9]+)*\\.[A-Za-z]{2,}$");
     private static final Pattern APPOINTMENT_NUM_PATTERN = Pattern.compile("^SDC-\\d{4}-\\d{4}$");
 
     // Clinic Operating Hours: 08:00 to 17:00

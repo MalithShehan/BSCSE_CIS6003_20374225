@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Sunrise Dental Clinic</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="app-wrapper">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-icon">🦷</div>
+                <div class="logo-text">
+                    <h1>Sunrise Dental</h1>
+                    <span>Management System</span>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="dashboard.html" class="nav-item active">
+                    <span class="icon">📊</span>
+                    <span>Dashboard</span>
+                </a>
+                <a href="register-appointment.html" class="nav-item">
+                    <span class="icon">📅</span>
+                    <span>New Appointment</span>
+                </a>
+                <a href="search-appointment.html" class="nav-item">
+                    <span class="icon">🔍</span>
+                    <span>Search & Manage</span>
+                </a>
+                <a href="bill.html" class="nav-item">
+                    <span class="icon">💳</span>
+                    <span>Billing & Receipts</span>
+                </a>
+                <a href="reports.html" id="nav-reports" class="nav-item">
+                    <span class="icon">📈</span>
+                    <span>Executive Reports</span>
+                </a>
+                <a href="help.html" class="nav-item">
+                    <span class="icon">❓</span>
+                    <span>Help & Guide</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="user-profile">
+                    <div class="user-avatar">SD</div>
+                    <div class="user-info">
+                        <span class="user-name">Loading...</span>
+                        <span class="user-role">Staff</span>
+                    </div>
+                </div>
+                <button id="btnLogout" class="btn-logout" title="Sign Out">🚪</button>
+            </div>
+        </aside>
+
+        <!-- Main Workspace -->
+        <main class="main-wrapper">
+            <!-- Top Header -->
+            <header class="top-header">
+                <div class="page-title">
+                    <h2>Clinic Overview & Dashboard</h2>
+                    <p>Real-time clinical operations, patient flow, and scheduling summary</p>
+                </div>
+                <div class="header-actions">
+                    <a href="register-appointment.html" class="btn btn-primary btn-sm">➕ Book Appointment</a>
+                </div>
+            </header>
+
+            <div class="content-body">
+                <!-- KPI Stat Cards -->
+                <div class="grid-cols-4">
+                    <div class="stat-card">
+                        <div class="stat-icon icon-blue">📅</div>
+                        <div class="stat-details">
+                            <h3 id="statTotalApps">...</h3>
+                            <p>Total Bookings</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon icon-amber">⏳</div>
+                        <div class="stat-details">
+                            <h3 id="statPendingApps">...</h3>
+                            <p>Pending / Scheduled</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon icon-green">✅</div>
+                        <div class="stat-details">
+                            <h3 id="statCompletedApps">...</h3>
+                            <p>Completed Treatments</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon icon-purple">💵</div>
+                        <div class="stat-details">
+                            <h3 id="statTotalRev">LKR 0.00</h3>
+                            <p>Net Revenue</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Appointments Card -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Recent Patient Appointments</h3>
+                        <div class="header-actions">
+                            <a href="search-appointment.html" class="btn btn-secondary btn-sm">View All Records</a>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="custom-table">
+                            <thead>
+                                <tr>
+                                    <th>Ref Number</th>
+                                    <th>Patient</th>
+                                    <th>Dental Specialist</th>
+                                    <th>Treatment</th>
+                                    <th>Date & Time</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="dashboardAppointmentTbody">
+                                <tr>
+                                    <td colspan="7" style="text-align:center;">Loading appointments...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/validation.js"></script>
+    <script src="js/appointment.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const user = await Auth.requireAuth();
+            if (!user) return;
+
+            // Load Appointments
+            await AppointmentManager.loadAppointmentTable('dashboardAppointmentTbody', 'ALL');
+
+            // Load KPI Summary
+            try {
+                const reportRes = await API.get('/reports?type=summary');
+                if (reportRes.success && reportRes.data) {
+                    const data = reportRes.data;
+                    document.getElementById('statTotalApps').textContent = data.totalRecordedAppointments || '0';
+                    document.getElementById('statCompletedApps').textContent = data.totalCompletedTreatments || '0';
+
+                    let totalPending = 0;
+                    let totalRev = 0;
+
+                    if (data.dailyBreakdown) {
+                        data.dailyBreakdown.forEach(d => {
+                            totalPending += (d.pendingAppointments || 0);
+                            totalRev += parseFloat(d.dailyRevenueGenerated || 0);
+                        });
+                    }
+
+                    document.getElementById('statPendingApps').textContent = totalPending;
+                    document.getElementById('statTotalRev').textContent = `LKR ${totalRev.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
+                }
+            } catch (e) {
+                console.error('Error fetching dashboard summary stats:', e);
+            }
+        });
+    </script>
+</body>
+</html>

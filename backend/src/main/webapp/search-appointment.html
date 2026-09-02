@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search & Manage Appointments - Sunrise Dental Clinic</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="app-wrapper">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-icon">🦷</div>
+                <div class="logo-text">
+                    <h1>Sunrise Dental</h1>
+                    <span>Management System</span>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="dashboard.html" class="nav-item">
+                    <span class="icon">📊</span>
+                    <span>Dashboard</span>
+                </a>
+                <a href="register-appointment.html" class="nav-item">
+                    <span class="icon">📅</span>
+                    <span>New Appointment</span>
+                </a>
+                <a href="search-appointment.html" class="nav-item active">
+                    <span class="icon">🔍</span>
+                    <span>Search & Manage</span>
+                </a>
+                <a href="bill.html" class="nav-item">
+                    <span class="icon">💳</span>
+                    <span>Billing & Receipts</span>
+                </a>
+                <a href="reports.html" id="nav-reports" class="nav-item">
+                    <span class="icon">📈</span>
+                    <span>Executive Reports</span>
+                </a>
+                <a href="help.html" class="nav-item">
+                    <span class="icon">❓</span>
+                    <span>Help & Guide</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="user-profile">
+                    <div class="user-avatar">SD</div>
+                    <div class="user-info">
+                        <span class="user-name">Loading...</span>
+                        <span class="user-role">Staff</span>
+                    </div>
+                </div>
+                <button id="btnLogout" class="btn-logout" title="Sign Out">🚪</button>
+            </div>
+        </aside>
+
+        <!-- Main Workspace -->
+        <main class="main-wrapper">
+            <header class="top-header">
+                <div class="page-title">
+                    <h2>Search & Manage Appointments</h2>
+                    <p>Lookup patient visits by appointment reference or filter clinical records.</p>
+                </div>
+                <div class="header-actions">
+                    <a href="register-appointment.html" class="btn btn-primary btn-sm">➕ New Appointment</a>
+                </div>
+            </header>
+
+            <div class="content-body">
+                <!-- Search Box Card -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">🔍 Lookup by Appointment Number</h3>
+                    </div>
+
+                    <div id="searchAlert"></div>
+
+                    <form id="searchForm" style="display:flex;gap:12px;align-items:center;">
+                        <input type="text" id="searchInput" class="form-control" 
+                                placeholder="Enter Appointment Reference (e.g., SDC-2026-0001)" 
+                                style="max-width:400px;" required>
+                        <button type="submit" class="btn btn-primary">Search Appointment</button>
+                    </form>
+                </div>
+
+                <!-- Detailed Single Search Result Card -->
+                <div id="searchResultCard" class="card" style="display:none;border:2px solid #38bdf8;">
+                    <div class="card-header">
+                        <div>
+                            <span style="font-size:0.8rem;text-transform:uppercase;color:#0284c7;font-weight:700;">Appointment Found</span>
+                            <h3 class="card-title" id="resAppNumber">SDC-2026-0001</h3>
+                        </div>
+                        <div>
+                            <span id="resStatusBadge" class="badge">SCHEDULED</span>
+                        </div>
+                    </div>
+
+                    <div class="grid-cols-3" style="margin-bottom:20px;">
+                        <div>
+                            <h4 style="font-size:0.85rem;color:#64748b;text-transform:uppercase;">Patient Name</h4>
+                            <p id="resPatientName" style="font-weight:700;font-size:1.05rem;">...</p>
+                            <p id="resPatientContact" style="color:#0284c7;font-size:0.9rem;">...</p>
+                            <p id="resPatientAddress" style="color:#64748b;font-size:0.85rem;">...</p>
+                            <p id="resPatientEmail" style="color:#64748b;font-size:0.85rem;">...</p>
+                        </div>
+                        <div>
+                            <h4 style="font-size:0.85rem;color:#64748b;text-transform:uppercase;">Clinical Team</h4>
+                            <p id="resDentist" style="font-weight:700;font-size:1.05rem;">...</p>
+                            <h4 style="font-size:0.85rem;color:#64748b;text-transform:uppercase;margin-top:12px;">Treatment</h4>
+                            <p id="resTreatment" style="color:#0f172a;font-weight:600;">...</p>
+                        </div>
+                        <div>
+                            <h4 style="font-size:0.85rem;color:#64748b;text-transform:uppercase;">Schedule Time</h4>
+                            <p id="resDateTime" style="font-weight:700;font-size:1.05rem;color:#0284c7;">...</p>
+                            <h4 style="font-size:0.85rem;color:#64748b;text-transform:uppercase;margin-top:12px;">Estimated Price</h4>
+                            <p id="resEstimatedCost" style="font-weight:800;font-size:1.25rem;color:#059669;">LKR 0.00</p>
+                        </div>
+                    </div>
+
+                    <div style="display:flex;gap:12px;border-top:1px solid #e2e8f0;padding-top:16px;">
+                        <button id="btnGoToBill" class="btn btn-primary btn-sm">💳 Calculate & Print Bill</button>
+                        <button id="btnCancelApp" class="btn btn-danger btn-sm">❌ Cancel Appointment</button>
+                    </div>
+                </div>
+
+                <!-- Master Appointment Registry Table -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">All Clinic Appointments</h3>
+                        <div style="display:flex;gap:8px;">
+                            <button class="btn btn-secondary btn-sm" onclick="AppointmentManager.loadAppointmentTable('searchTableBody', 'ALL')">All</button>
+                            <button class="btn btn-secondary btn-sm" onclick="AppointmentManager.loadAppointmentTable('searchTableBody', 'SCHEDULED')">Scheduled</button>
+                            <button class="btn btn-secondary btn-sm" onclick="AppointmentManager.loadAppointmentTable('searchTableBody', 'COMPLETED')">Completed</button>
+                            <button class="btn btn-secondary btn-sm" onclick="AppointmentManager.loadAppointmentTable('searchTableBody', 'CANCELLED')">Cancelled</button>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="custom-table">
+                            <thead>
+                                <tr>
+                                    <th>Ref Number</th>
+                                    <th>Patient</th>
+                                    <th>Dentist</th>
+                                    <th>Treatment</th>
+                                    <th>Date & Time</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="searchTableBody">
+                                <tr>
+                                    <td colspan="7" style="text-align:center;">Loading appointments...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/validation.js"></script>
+    <script src="js/appointment.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const user = await Auth.requireAuth();
+            if (!user) return;
+
+            // Check if query param exists
+            const urlParams = new URLSearchParams(window.location.search);
+            const searchParam = urlParams.get('search');
+            if (searchParam) {
+                document.getElementById('searchInput').value = searchParam;
+                await AppointmentManager.searchAppointment(searchParam);
+            }
+
+            // Load master table
+            await AppointmentManager.loadAppointmentTable('searchTableBody', 'ALL');
+
+            // Handle search submit
+            document.getElementById('searchForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const appNum = document.getElementById('searchInput').value.trim();
+                await AppointmentManager.searchAppointment(appNum);
+            });
+        });
+    </script>
+</body>
+</html>

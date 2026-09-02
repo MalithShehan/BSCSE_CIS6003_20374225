@@ -69,8 +69,8 @@ public class AppointmentServiceTest {
         when(appointmentDAO.createAppointment(any(Appointment.class))).thenReturn(100);
 
         Appointment result = appointmentService.bookAppointment(
-                "Kasun Dias", "No 12, Highlevel Rd, Nugegoda", "0779998888", "kasun@example.com",
-                1, 1, futureDate, clinicTime, "Routine checkup"
+            "Kasun Dias", "No 12, Highlevel Rd, Nugegoda", "0779998888", "kasun@example.com",
+            1, 1, futureDate, clinicTime, "Routine checkup"
         );
 
         assertNotNull(result);
@@ -92,8 +92,8 @@ public class AppointmentServiceTest {
 
         IllegalStateException ex = assertThrows(IllegalStateException.class, () ->
             appointmentService.bookAppointment(
-                    "Malith Shehan", "Colombo", "0771234567", "malith@example.com",
-                    1, 1, futureDate, clinicTime, null
+                "Malith Shehan", "Colombo", "0771234567", "malith@example.com",
+                1, 1, futureDate, clinicTime, null
             )
         );
 
@@ -112,8 +112,8 @@ public class AppointmentServiceTest {
 
         assertThrows(IllegalArgumentException.class, () ->
             appointmentService.bookAppointment(
-                    "Malith Shehan", "Colombo", "0771234567", "malith@example.com",
-                    1, 1, pastDate, clinicTime, null
+                "Malith Shehan", "Colombo", "0771234567", "malith@example.com",
+                1, 1, pastDate, clinicTime, null
             )
         );
     }
@@ -129,8 +129,8 @@ public class AppointmentServiceTest {
 
         assertThrows(IllegalArgumentException.class, () ->
             appointmentService.bookAppointment(
-                    "Malith Shehan", "Colombo", "0771234567", "malith@example.com",
-                    1, 1, futureDate, eveningTime, null
+                "Malith Shehan", "Colombo", "0771234567", "malith@example.com",
+                1, 1, futureDate, eveningTime, null
             )
         );
     }
