@@ -181,6 +181,9 @@
                 await AppointmentManager.searchAppointment(searchParam);
             }
 
+            // Bind real-time validation to searchInput
+            Validation.bindRealtimeValidation('searchInput', (v) => Validation.validateAppointmentNumber(v));
+
             // Load master table
             await AppointmentManager.loadAppointmentTable('searchTableBody', 'ALL');
 

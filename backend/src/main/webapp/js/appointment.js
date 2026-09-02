@@ -82,49 +82,110 @@ const AppointmentManager = {
     },
 
     /**
-     * Submits the appointment booking form.
+     * Submits the appointment booking form with complete field-level validations.
      */
     async handleBookingSubmit(event) {
         event.preventDefault();
         Validation.clearAlert('alertContainer');
 
-        const patientName = document.getElementById('patientName').value.trim();
-        const patientAddress = document.getElementById('patientAddress').value.trim();
-        const patientContact = document.getElementById('patientContact').value.trim();
-        const patientEmail = document.getElementById('patientEmail').value.trim();
-        const dentistId = parseInt(document.getElementById('dentistId').value, 10);
-        const treatmentId = parseInt(document.getElementById('treatmentId').value, 10);
-        const appointmentDate = document.getElementById('appointmentDate').value;
-        const appointmentTime = document.getElementById('appointmentTime').value;
-        const notes = document.getElementById('notes') ? document.getElementById('notes').value.trim() : '';
+        const nameEl = document.getElementById('patientName');
+        const contactEl = document.getElementById('patientContact');
+        const addressEl = document.getElementById('patientAddress');
+        const emailEl = document.getElementById('patientEmail');
+        const dentistEl = document.getElementById('dentistId');
+        const treatmentEl = document.getElementById('treatmentId');
+        const dateEl = document.getElementById('appointmentDate');
+        const timeEl = document.getElementById('appointmentTime');
+        const notesEl = document.getElementById('notes');
 
-        // Client-side validations
-        if (!patientName) {
-            Validation.showAlert('alertContainer', 'Patient name is required.', 'danger');
-            return;
+        const patientName = nameEl ? nameEl.value.trim() : '';
+        const patientContact = contactEl ? contactEl.value.trim() : '';
+        const patientAddress = addressEl ? addressEl.value.trim() : '';
+        const patientEmail = emailEl ? emailEl.value.trim() : '';
+        const dentistId = dentistEl ? parseInt(dentistEl.value, 10) : 0;
+        const treatmentId = treatmentEl ? parseInt(treatmentEl.value, 10) : 0;
+        const appointmentDate = dateEl ? dateEl.value : '';
+        const appointmentTime = timeEl ? timeEl.value : '';
+        const notes = notesEl ? notesEl.value.trim() : '';
+
+        let isValid = true;
+
+        // 1. Patient Name Validation
+        const nameVal = Validation.validatePatientName(patientName);
+        if (!nameVal.valid) {
+            Validation.setInvalid(nameEl, nameVal.message);
+            isValid = false;
+        } else {
+            Validation.setValid(nameEl);
         }
-        if (!Validation.isValidPhone(patientContact)) {
-            Validation.showAlert('alertContainer', 'Please enter a valid contact number (e.g., 0771234567 or +94771234567).', 'danger');
-            return;
+
+        // 2. Contact Number Validation
+        const contactVal = Validation.validatePhone(patientContact);
+        if (!contactVal.valid) {
+            Validation.setInvalid(contactEl, contactVal.message);
+            isValid = false;
+        } else {
+            Validation.setValid(contactEl);
         }
-        if (patientEmail && !Validation.EMAIL_REGEX.test(patientEmail)) {
-            Validation.showAlert('alertContainer', 'Please enter a valid email address.', 'danger');
-            return;
+
+        // 3. Residential Address Validation
+        const addressVal = Validation.validateAddress(patientAddress);
+        if (!addressVal.valid) {
+            Validation.setInvalid(addressEl, addressVal.message);
+            isValid = false;
+        } else {
+            Validation.setValid(addressEl);
         }
-        if (!dentistId) {
-            Validation.showAlert('alertContainer', 'Please select a dentist.', 'danger');
-            return;
+
+        // 4. Email Address Validation (Optional)
+        const emailVal = Validation.validateEmail(patientEmail);
+        if (!emailVal.valid) {
+            Validation.setInvalid(emailEl, emailVal.message);
+            isValid = false;
+        } else if (patientEmail) {
+            Validation.setValid(emailEl);
+        } else {
+            Validation.clearFieldStatus(emailEl);
         }
-        if (!treatmentId) {
-            Validation.showAlert('alertContainer', 'Please select a treatment.', 'danger');
-            return;
+
+        // 5. Dentist Selection Validation
+        const dentistVal = Validation.validateDentist(dentistId);
+        if (!dentistVal.valid) {
+            Validation.setInvalid(dentistEl, dentistVal.message);
+            isValid = false;
+        } else {
+            Validation.setValid(dentistEl);
         }
-        if (!Validation.isFutureOrToday(appointmentDate)) {
-            Validation.showAlert('alertContainer', 'Appointment date cannot be in the past.', 'danger');
-            return;
+
+        // 6. Treatment Selection Validation
+        const treatmentVal = Validation.validateTreatment(treatmentId);
+        if (!treatmentVal.valid) {
+            Validation.setInvalid(treatmentEl, treatmentVal.message);
+            isValid = false;
+        } else {
+            Validation.setValid(treatmentEl);
         }
-        if (!Validation.isWithinClinicHours(appointmentTime)) {
-            Validation.showAlert('alertContainer', 'Appointment time must be between 08:00 and 17:00.', 'danger');
+
+        // 7. Appointment Date Validation
+        const dateVal = Validation.validateDate(appointmentDate);
+        if (!dateVal.valid) {
+            Validation.setInvalid(dateEl, dateVal.message);
+            isValid = false;
+        } else {
+            Validation.setValid(dateEl);
+        }
+
+        // 8. Appointment Time Validation
+        const timeVal = Validation.validateTime(appointmentTime);
+        if (!timeVal.valid) {
+            Validation.setInvalid(timeEl, timeVal.message);
+            isValid = false;
+        } else {
+            Validation.setValid(timeEl);
+        }
+
+        if (!isValid) {
+            Validation.showAlert('alertContainer', 'Please correct the highlighted form errors before proceeding.', 'danger');
             return;
         }
 
@@ -138,11 +199,11 @@ const AppointmentManager = {
             patientName,
             patientAddress,
             patientContact,
-            patientEmail,
+            patientEmail: patientEmail || null,
             dentistId,
             treatmentId,
             appointmentDate,
-            appointmentTime,
+            appointmentTime: appointmentTime.length === 5 ? appointmentTime + ':00' : appointmentTime,
             notes
         };
 
@@ -157,13 +218,15 @@ const AppointmentManager = {
             const app = response.data;
             Validation.showAlert('alertContainer', `
                 <strong>Appointment Scheduled Successfully!</strong><br>
-                Reference Number: <strong>${app.appointmentNumber}</strong><br>
+                Official Reference: <strong>${app.appointmentNumber}</strong><br>
+                Patient: <strong>${app.patientName}</strong> (${app.patientContact})<br>
                 Date & Time: ${app.appointmentDate} at ${app.appointmentTime}<br>
                 Specialist: ${app.dentistName} | Treatment: ${app.treatmentName}<br>
                 Estimated Total: LKR ${parseFloat(app.totalEstimatedCost).toLocaleString()}
             `, 'success');
 
             document.getElementById('bookingForm').reset();
+            [nameEl, contactEl, addressEl, emailEl, dentistEl, treatmentEl, dateEl, timeEl].forEach(el => Validation.clearFieldStatus(el));
             this.updateCostPreview();
         } else {
             Validation.showAlert('alertContainer', response.message || 'Failed to schedule appointment.', 'danger');
@@ -175,18 +238,24 @@ const AppointmentManager = {
      */
     async searchAppointment(appNumber) {
         Validation.clearAlert('searchAlert');
+        const inputEl = document.getElementById('searchInput');
         const container = document.getElementById('searchResultCard');
         if (container) container.style.display = 'none';
 
-        if (!Validation.isValidAppointmentNumber(appNumber)) {
-            Validation.showAlert('searchAlert', 'Invalid format. Expected: SDC-YYYY-XXXX (e.g. SDC-2026-0001).', 'danger');
+        const valResult = Validation.validateAppointmentNumber(appNumber);
+        if (!valResult.valid) {
+            if (inputEl) Validation.setInvalid(inputEl, valResult.message);
+            Validation.showAlert('searchAlert', valResult.message, 'danger');
             return;
+        } else if (inputEl) {
+            Validation.setValid(inputEl);
         }
 
-        const res = await API.get(`/appointments?appointmentNumber=${encodeURIComponent(appNumber.trim())}`);
+        const res = await API.get(`/appointments?appointmentNumber=${encodeURIComponent(appNumber.trim().toUpperCase())}`);
         if (res.success && res.data) {
             this.renderAppointmentDetails(res.data);
         } else {
+            if (inputEl) Validation.setInvalid(inputEl, 'No appointment record found matching this reference.');
             Validation.showAlert('searchAlert', res.message || 'No appointment found matching reference.', 'danger');
         }
     },

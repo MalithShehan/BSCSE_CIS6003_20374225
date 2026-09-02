@@ -425,6 +425,38 @@ textarea.form-control {
     min-height: 100px;
 }
 
+.form-control.is-invalid, .form-select.is-invalid {
+    border-color: #ef4444 !important;
+    background-color: #fef2f2 !important;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15) !important;
+}
+
+.form-control.is-valid, .form-select.is-valid {
+    border-color: #10b981 !important;
+    background-color: #f0fdf4 !important;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15) !important;
+}
+
+.invalid-feedback {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.8125rem;
+    color: #dc2626;
+    margin-top: 6px;
+    font-weight: 500;
+}
+
+.valid-feedback {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.8125rem;
+    color: #059669;
+    margin-top: 6px;
+    font-weight: 500;
+}
+
 .form-hint {
     font-size: 0.8rem;
     color: var(--text-secondary);

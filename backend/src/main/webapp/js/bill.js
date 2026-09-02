@@ -22,27 +22,32 @@ const BillingManager = {
      */
     async loadAppointmentForBilling(appNumber) {
         Validation.clearAlert('billAlert');
+        const inputEl = document.getElementById('searchAppNumInput');
         const breakdownCard = document.getElementById('billCalculationCard');
         const receiptCard = document.getElementById('printableReceiptCard');
         
         if (breakdownCard) breakdownCard.style.display = 'none';
         if (receiptCard) receiptCard.style.display = 'none';
 
-        if (!Validation.isValidAppointmentNumber(appNumber)) {
-            Validation.showAlert('billAlert', 'Please enter a valid appointment number (e.g., SDC-2026-0001).', 'danger');
+        const valResult = Validation.validateAppointmentNumber(appNumber);
+        if (!valResult.valid) {
+            if (inputEl) Validation.setInvalid(inputEl, valResult.message);
+            Validation.showAlert('billAlert', valResult.message, 'danger');
             return;
+        } else if (inputEl) {
+            Validation.setValid(inputEl);
         }
 
         // First check if an invoice already exists for this appointment
-        const invoiceCheck = await API.get(`/bill?appointmentNumber=${encodeURIComponent(appNumber.trim())}`);
+        const invoiceCheck = await API.get(`/bill?appointmentNumber=${encodeURIComponent(appNumber.trim().toUpperCase())}`);
         if (invoiceCheck.success && invoiceCheck.data) {
             this.renderPrintableReceipt(invoiceCheck.data);
-            Validation.showAlert('billAlert', 'An official invoice has already been generated for this appointment.', 'info');
+            Validation.showAlert('billAlert', 'An official invoice has already been generated and settled for this appointment.', 'info');
             return;
         }
 
         // Otherwise load appointment to generate new invoice
-        const appRes = await API.get(`/appointments?appointmentNumber=${encodeURIComponent(appNumber.trim())}`);
+        const appRes = await API.get(`/appointments?appointmentNumber=${encodeURIComponent(appNumber.trim().toUpperCase())}`);
         if (appRes.success && appRes.data) {
             const app = appRes.data;
             if (app.status === 'CANCELLED') {
@@ -53,7 +58,8 @@ const BillingManager = {
             this.activeAppointment = app;
             this.renderCalculationForm(app);
         } else {
-            Validation.showAlert('billAlert', appRes.message || 'Appointment not found.', 'danger');
+            if (inputEl) Validation.setInvalid(inputEl, 'No appointment record found matching this reference.');
+            Validation.showAlert('billAlert', appRes.message || 'Appointment record not found.', 'danger');
         }
     },
 
@@ -87,9 +93,18 @@ const BillingManager = {
         const subtotal = dentistFee + treatmentCost;
 
         const discountInput = document.getElementById('discountInput');
-        let discountPct = discountInput ? parseFloat(discountInput.value) || 0 : 0;
-        if (discountPct < 0) discountPct = 0;
-        if (discountPct > 100) discountPct = 100;
+        let discountPct = 0;
+        if (discountInput) {
+            const val = discountInput.value;
+            const discVal = Validation.validateDiscount(val);
+            if (!discVal.valid) {
+                Validation.setInvalid(discountInput, discVal.message);
+                discountPct = 0;
+            } else {
+                Validation.setValid(discountInput);
+                discountPct = parseFloat(val) || 0;
+            }
+        }
 
         const discountAmount = subtotal * (discountPct / 100.0);
         const netTotal = subtotal - discountAmount;
@@ -109,8 +124,23 @@ const BillingManager = {
         const discountInput = document.getElementById('discountInput');
         const paymentMethodSelect = document.getElementById('paymentMethodSelect');
 
-        const discountPct = discountInput ? parseFloat(discountInput.value) || 0 : 0;
+        const discountVal = discountInput ? discountInput.value : '0';
+        const discCheck = Validation.validateDiscount(discountVal);
+        if (!discCheck.valid) {
+            Validation.setInvalid(discountInput, discCheck.message);
+            Validation.showAlert('billAlert', discCheck.message, 'danger');
+            return;
+        }
+
         const paymentMethod = paymentMethodSelect ? paymentMethodSelect.value : 'CASH';
+        const payCheck = Validation.validatePaymentMethod(paymentMethod);
+        if (!payCheck.valid) {
+            Validation.setInvalid(paymentMethodSelect, payCheck.message);
+            Validation.showAlert('billAlert', payCheck.message, 'danger');
+            return;
+        }
+
+        const discountPct = parseFloat(discountVal) || 0;
 
         const btn = document.getElementById('btnConfirmBill');
         if (btn) {

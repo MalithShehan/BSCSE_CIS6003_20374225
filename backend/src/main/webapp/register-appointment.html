@@ -197,6 +197,16 @@
             // Load catalogs
             await AppointmentManager.loadFormData();
 
+            // Setup real-time live input field validations
+            Validation.bindRealtimeValidation('patientName', (v) => Validation.validatePatientName(v));
+            Validation.bindRealtimeValidation('patientContact', (v) => Validation.validatePhone(v));
+            Validation.bindRealtimeValidation('patientAddress', (v) => Validation.validateAddress(v));
+            Validation.bindRealtimeValidation('patientEmail', (v) => Validation.validateEmail(v));
+            Validation.bindRealtimeValidation('dentistId', (v) => Validation.validateDentist(v));
+            Validation.bindRealtimeValidation('treatmentId', (v) => Validation.validateTreatment(v));
+            Validation.bindRealtimeValidation('appointmentDate', (v) => Validation.validateDate(v));
+            Validation.bindRealtimeValidation('appointmentTime', (v) => Validation.validateTime(v));
+
             // Setup listeners for live cost calculation
             document.getElementById('dentistId').addEventListener('change', () => AppointmentManager.updateCostPreview());
             document.getElementById('treatmentId').addEventListener('change', () => AppointmentManager.updateCostPreview());

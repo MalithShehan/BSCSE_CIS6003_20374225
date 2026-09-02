@@ -56,16 +56,40 @@
                 Validation.showAlert('loginAlert', 'Your session has expired. Please log in again.', 'warning');
             }
 
+            const usernameEl = document.getElementById('username');
+            const passwordEl = document.getElementById('password');
+
+            // Attach real-time input listeners
+            Validation.bindRealtimeValidation('username', Validation.validateUsername.bind(Validation));
+            Validation.bindRealtimeValidation('password', Validation.validatePassword.bind(Validation));
+
             const loginForm = document.getElementById('loginForm');
             loginForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
                 Validation.clearAlert('loginAlert');
 
-                const username = document.getElementById('username').value.trim();
-                const password = document.getElementById('password').value;
+                const username = usernameEl.value.trim();
+                const password = passwordEl.value;
 
-                if (!username || !password) {
-                    Validation.showAlert('loginAlert', 'Username and password are required.', 'danger');
+                let isValid = true;
+                const userVal = Validation.validateUsername(username);
+                if (!userVal.valid) {
+                    Validation.setInvalid(usernameEl, userVal.message);
+                    isValid = false;
+                } else {
+                    Validation.setValid(usernameEl);
+                }
+
+                const passVal = Validation.validatePassword(password);
+                if (!passVal.valid) {
+                    Validation.setInvalid(passwordEl, passVal.message);
+                    isValid = false;
+                } else {
+                    Validation.setValid(passwordEl);
+                }
+
+                if (!isValid) {
+                    Validation.showAlert('loginAlert', 'Please enter your username and password.', 'danger');
                     return;
                 }
 
@@ -81,7 +105,9 @@
                 if (response.success && response.data) {
                     window.location.href = 'dashboard.html';
                 } else {
-                    Validation.showAlert('loginAlert', response.message || 'Authentication failed. Please check credentials.', 'danger');
+                    Validation.setInvalid(usernameEl, '');
+                    Validation.setInvalid(passwordEl, '');
+                    Validation.showAlert('loginAlert', response.message || 'Invalid username or password.', 'danger');
                 }
             });
         });

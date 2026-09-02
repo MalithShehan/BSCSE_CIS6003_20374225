@@ -248,6 +248,11 @@
 
             await BillingManager.init();
 
+            // Real-time validations
+            Validation.bindRealtimeValidation('searchAppNumInput', (v) => Validation.validateAppointmentNumber(v));
+            Validation.bindRealtimeValidation('discountInput', (v) => Validation.validateDiscount(v));
+            Validation.bindRealtimeValidation('paymentMethodSelect', (v) => Validation.validatePaymentMethod(v));
+
             // Discount input dynamic listener
             const discountInput = document.getElementById('discountInput');
             if (discountInput) {
