@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Billing & Invoice Receipts - Sunrise Dental Clinic</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="app-wrapper">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-icon">🦷</div>
+                <div class="logo-text">
+                    <h1>Sunrise Dental</h1>
+                    <span>Management System</span>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="dashboard.html" class="nav-item">
+                    <span class="icon">📊</span>
+                    <span>Dashboard</span>
+                </a>
+                <a href="register-appointment.html" class="nav-item">
+                    <span class="icon">📅</span>
+                    <span>New Appointment</span>
+                </a>
+                <a href="search-appointment.html" class="nav-item">
+                    <span class="icon">🔍</span>
+                    <span>Search & Manage</span>
+                </a>
+                <a href="bill.html" class="nav-item active">
+                    <span class="icon">💳</span>
+                    <span>Billing & Receipts</span>
+                </a>
+                <a href="reports.html" id="nav-reports" class="nav-item">
+                    <span class="icon">📈</span>
+                    <span>Executive Reports</span>
+                </a>
+                <a href="help.html" class="nav-item">
+                    <span class="icon">❓</span>
+                    <span>Help & Guide</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="user-profile">
+                    <div class="user-avatar">SD</div>
+                    <div class="user-info">
+                        <span class="user-name">Loading...</span>
+                        <span class="user-role">Staff</span>
+                    </div>
+                </div>
+                <button id="btnLogout" class="btn-logout" title="Sign Out">🚪</button>
+            </div>
+        </aside>
+
+        <!-- Main Workspace -->
+        <main class="main-wrapper">
+            <header class="top-header no-print">
+                <div class="page-title">
+                    <h2>Calculate & Print Patient Bill</h2>
+                    <p>Apply promotional discounts, settle clinical invoices, and generate printable receipts.</p>
+                </div>
+            </header>
+
+            <div class="content-body">
+                <div id="billAlert" class="no-print"></div>
+
+                <!-- Appointment Lookup for Billing -->
+                <div class="card no-print">
+                    <div class="card-header">
+                        <h3 class="card-title">1. Search Appointment to Settle</h3>
+                    </div>
+
+                    <form id="billSearchForm" style="display:flex;gap:12px;align-items:center;">
+                        <input type="text" id="searchAppNumInput" class="form-control" 
+                               placeholder="Enter Appointment Ref (e.g., SDC-2026-0001)" 
+                               style="max-width:400px;" required>
+                        <button type="submit" class="btn btn-primary">Retrieve Bill Details</button>
+                    </form>
+                </div>
+
+                <!-- Interactive Bill Calculation Card -->
+                <div id="billCalculationCard" class="card no-print" style="display:none;border-color:#38bdf8;">
+                    <div class="card-header">
+                        <div>
+                            <span style="font-size:0.8rem;text-transform:uppercase;color:#0284c7;font-weight:700;">Billing Calculator</span>
+                            <h3 class="card-title" id="calcAppNumber">SDC-2026-0001</h3>
+                        </div>
+                    </div>
+
+                    <div class="grid-cols-2" style="margin-bottom:24px;">
+                        <div>
+                            <p style="color:#64748b;font-size:0.85rem;text-transform:uppercase;">Patient</p>
+                            <h4 id="calcPatient" style="font-size:1.1rem;color:#0f172a;margin-bottom:8px;">...</h4>
+
+                            <p style="color:#64748b;font-size:0.85rem;text-transform:uppercase;">Attending Dentist</p>
+                            <h4 id="calcDentist" style="font-size:1rem;color:#0f172a;">...</h4>
+                        </div>
+                        <div>
+                            <p style="color:#64748b;font-size:0.85rem;text-transform:uppercase;">Treatment Procedure</p>
+                            <h4 id="calcTreatment" style="font-size:1.1rem;color:#0f172a;margin-bottom:8px;">...</h4>
+
+                            <div style="background:#f8fafc;padding:12px;border-radius:var(--radius-md);border:1px solid #e2e8f0;">
+                                <div style="display:flex;justify-content:space-between;margin-bottom:4px;font-size:0.9rem;">
+                                    <span>Dentist Fee:</span>
+                                    <strong id="calcDentistFee">LKR 0.00</strong>
+                                </div>
+                                <div style="display:flex;justify-content:space-between;font-size:0.9rem;">
+                                    <span>Treatment Cost:</span>
+                                    <strong id="calcTreatmentCost">LKR 0.00</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row" style="background:#f0f9ff;padding:20px;border-radius:var(--radius-md);border:1px solid #bae6fd;margin-bottom:24px;">
+                        <div class="form-group" style="margin-bottom:0;">
+                            <label class="form-label" for="discountInput" style="color:#0369a1;">Discount Percentage (%)</label>
+                            <input type="number" id="discountInput" class="form-control" min="0" max="100" step="0.5" value="0">
+                            <span class="form-hint">Enter 0 to 100% discount</span>
+                        </div>
+                        <div class="form-group" style="margin-bottom:0;">
+                            <label class="form-label" for="paymentMethodSelect" style="color:#0369a1;">Payment Method</label>
+                            <select id="paymentMethodSelect" class="form-select">
+                                <option value="CASH">Cash Settlement</option>
+                                <option value="CREDIT_CARD">Credit Card</option>
+                                <option value="DEBIT_CARD">Debit Card</option>
+                                <option value="INSURANCE">Dental Insurance</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div style="display:flex;justify-content:flex-end;margin-bottom:20px;">
+                        <div style="width:300px;">
+                            <div style="display:flex;justify-content:space-between;margin-bottom:6px;color:#64748b;">
+                                <span>Subtotal:</span>
+                                <strong id="calcSubtotal">LKR 0.00</strong>
+                            </div>
+                            <div style="display:flex;justify-content:space-between;margin-bottom:6px;color:#ef4444;">
+                                <span>Discount Amount:</span>
+                                <strong id="calcDiscountAmount">- LKR 0.00</strong>
+                            </div>
+                            <div style="display:flex;justify-content:space-between;font-size:1.3rem;font-weight:800;color:#0f172a;border-top:2px solid #0f172a;padding-top:8px;">
+                                <span>Net Total:</span>
+                                <span id="calcNetTotal" style="color:#0284c7;">LKR 0.00</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button id="btnConfirmBill" class="btn btn-success btn-block" style="padding:14px;" onclick="BillingManager.generateBill()">
+                        Issue Official Invoice & Settlement
+                    </button>
+                </div>
+
+                <!-- Official Printable Receipt Layout -->
+                <div id="printableReceiptCard" style="display:none;">
+                    <div class="no-print" style="margin-bottom:16px;display:flex;justify-content:flex-end;gap:10px;">
+                        <button class="btn btn-primary" onclick="BillingManager.printReceipt()">🖨️ Print Patient Receipt</button>
+                    </div>
+
+                    <div class="invoice-box">
+                        <div class="invoice-header">
+                            <div class="invoice-title">
+                                <h2>Sunrise Dental Clinic</h2>
+                                <p>No 45, Galle Road, Colombo 03, Sri Lanka</p>
+                                <p>Tel: +94 11 234 5678 | Email: info@sunrisedental.lk</p>
+                            </div>
+                            <div class="invoice-meta">
+                                <h3 id="recInvoiceNumber">INV-2026-0001</h3>
+                                <p>Date: <span id="recCreatedDate">...</span></p>
+                                <p>Ref: <strong id="recAppNumber">...</strong></p>
+                                <p>Status: <span class="badge badge-paid">PAID</span></p>
+                            </div>
+                        </div>
+
+                        <div class="invoice-details-grid">
+                            <div class="invoice-party">
+                                <h4>Billed To (Patient)</h4>
+                                <p><strong id="recPatientName">...</strong></p>
+                                <p id="recPatientContact">...</p>
+                                <p id="recPatientAddress">...</p>
+                            </div>
+                            <div class="invoice-party">
+                                <h4>Clinical Attendant</h4>
+                                <p><strong id="recDentist">...</strong></p>
+                                <p>Department of Dental Surgery</p>
+                                <p>Payment Mode: <strong id="recPaymentMethod">CASH</strong></p>
+                            </div>
+                        </div>
+
+                        <table class="invoice-summary-table">
+                            <thead>
+                                <tr>
+                                    <th>Description / Clinical Procedure</th>
+                                    <th style="text-align:right;">Amount (LKR)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Specialist Consultation Fee</td>
+                                    <td id="recDentistFee" style="text-align:right;">0.00</td>
+                                </tr>
+                                <tr>
+                                    <td id="recTreatment">Treatment Procedure</td>
+                                    <td id="recTreatmentCost" style="text-align:right;">0.00</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="invoice-totals">
+                            <div class="totals-row">
+                                <span>Gross Subtotal:</span>
+                                <strong id="recSubtotal">LKR 0.00</strong>
+                            </div>
+                            <div class="totals-row">
+                                <span>Promotional Discount:</span>
+                                <strong id="recDiscount" style="color:#ef4444;">- LKR 0.00</strong>
+                            </div>
+                            <div class="totals-row grand-total">
+                                <span>Total Paid:</span>
+                                <span id="recGrandTotal">LKR 0.00</span>
+                            </div>
+                        </div>
+
+                        <div class="invoice-footer">
+                            <p>Thank you for choosing Sunrise Dental Clinic for your oral health care!</p>
+                            <p>This is a computer-generated receipt and requires no physical signature.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/validation.js"></script>
+    <script src="js/bill.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const user = await Auth.requireAuth();
+            if (!user) return;
+
+            await BillingManager.init();
+
+            // Discount input dynamic listener
+            const discountInput = document.getElementById('discountInput');
+            if (discountInput) {
+                discountInput.addEventListener('input', () => BillingManager.updateTotals());
+            }
+
+            // Search form submit
+            document.getElementById('billSearchForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const appNum = document.getElementById('searchAppNumInput').value.trim();
+                await BillingManager.loadAppointmentForBilling(appNum);
+            });
+        });
+    </script>
+</body>
+</html>

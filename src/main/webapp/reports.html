@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Executive Decision-Support Reports - Sunrise Dental Clinic</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="app-wrapper">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-icon">🦷</div>
+                <div class="logo-text">
+                    <h1>Sunrise Dental</h1>
+                    <span>Management System</span>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="dashboard.html" class="nav-item">
+                    <span class="icon">📊</span>
+                    <span>Dashboard</span>
+                </a>
+                <a href="register-appointment.html" class="nav-item">
+                    <span class="icon">📅</span>
+                    <span>New Appointment</span>
+                </a>
+                <a href="search-appointment.html" class="nav-item">
+                    <span class="icon">🔍</span>
+                    <span>Search & Manage</span>
+                </a>
+                <a href="bill.html" class="nav-item">
+                    <span class="icon">💳</span>
+                    <span>Billing & Receipts</span>
+                </a>
+                <a href="reports.html" id="nav-reports" class="nav-item active">
+                    <span class="icon">📈</span>
+                    <span>Executive Reports</span>
+                </a>
+                <a href="help.html" class="nav-item">
+                    <span class="icon">❓</span>
+                    <span>Help & Guide</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="user-profile">
+                    <div class="user-avatar">SD</div>
+                    <div class="user-info">
+                        <span class="user-name">Loading...</span>
+                        <span class="user-role">Staff</span>
+                    </div>
+                </div>
+                <button id="btnLogout" class="btn-logout" title="Sign Out">🚪</button>
+            </div>
+        </aside>
+
+        <!-- Main Workspace -->
+        <main class="main-wrapper">
+            <header class="top-header">
+                <div class="page-title">
+                    <h2>Executive Decision-Support Reports</h2>
+                    <p>Real-time analytics generated directly from MySQL database views.</p>
+                </div>
+            </header>
+
+            <div class="content-body">
+                <!-- 1. Daily Appointment Report -->
+                <div class="card">
+                    <div class="card-header">
+                        <div>
+                            <span style="font-size:0.75rem;text-transform:uppercase;color:#0284c7;font-weight:700;">Database View: Daily_Appointment_Report</span>
+                            <h3 class="card-title">📅 Daily Appointments & Workload Breakdown</h3>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="custom-table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Dentist</th>
+                                    <th>Specialization</th>
+                                    <th>Total Scheduled</th>
+                                    <th>Completed</th>
+                                    <th>Cancelled</th>
+                                    <th>Daily Revenue</th>
+                                </tr>
+                            </thead>
+                            <tbody id="dailyReportTbody">
+                                <tr>
+                                    <td colspan="7" style="text-align:center;">Loading daily report data...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 2. Monthly Revenue Report -->
+                <div class="card">
+                    <div class="card-header">
+                        <div>
+                            <span style="font-size:0.75rem;text-transform:uppercase;color:#059669;font-weight:700;">Database View: Monthly_Revenue_Report</span>
+                            <h3 class="card-title">💵 Monthly Revenue & Financial Audit</h3>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="custom-table">
+                            <thead>
+                                <tr>
+                                    <th>Revenue Month</th>
+                                    <th>Invoices Issued</th>
+                                    <th>Consultation Revenue</th>
+                                    <th>Treatment Revenue</th>
+                                    <th>Total Discounts</th>
+                                    <th>Net Revenue</th>
+                                </tr>
+                            </thead>
+                            <tbody id="monthlyReportTbody">
+                                <tr>
+                                    <td colspan="6" style="text-align:center;">Loading monthly financials...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 3. Dentist Performance Report -->
+                <div class="card">
+                    <div class="card-header">
+                        <div>
+                            <span style="font-size:0.75rem;text-transform:uppercase;color:#7c3aed;font-weight:700;">Database View: Dentist_Performance_Report</span>
+                            <h3 class="card-title">🏆 Dentist Performance & Workload Metrics</h3>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="custom-table">
+                            <thead>
+                                <tr>
+                                    <th>Dentist Name</th>
+                                    <th>Specialization</th>
+                                    <th>Unique Patients</th>
+                                    <th>Total Appointments</th>
+                                    <th>Completed Treatments</th>
+                                    <th>Revenue Generated</th>
+                                </tr>
+                            </thead>
+                            <tbody id="dentistReportTbody">
+                                <tr>
+                                    <td colspan="6" style="text-align:center;">Loading dentist performance...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/reports.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const user = await Auth.requireAuth();
+            if (!user) return;
+
+            await ReportsManager.loadReports();
+        });
+    </script>
+</body>
+</html>

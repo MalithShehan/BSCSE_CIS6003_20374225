@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Help & User Guide - Sunrise Dental Clinic</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="app-wrapper">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-icon">🦷</div>
+                <div class="logo-text">
+                    <h1>Sunrise Dental</h1>
+                    <span>Management System</span>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="dashboard.html" class="nav-item">
+                    <span class="icon">📊</span>
+                    <span>Dashboard</span>
+                </a>
+                <a href="register-appointment.html" class="nav-item">
+                    <span class="icon">📅</span>
+                    <span>New Appointment</span>
+                </a>
+                <a href="search-appointment.html" class="nav-item">
+                    <span class="icon">🔍</span>
+                    <span>Search & Manage</span>
+                </a>
+                <a href="bill.html" class="nav-item">
+                    <span class="icon">💳</span>
+                    <span>Billing & Receipts</span>
+                </a>
+                <a href="reports.html" id="nav-reports" class="nav-item">
+                    <span class="icon">📈</span>
+                    <span>Executive Reports</span>
+                </a>
+                <a href="help.html" class="nav-item active">
+                    <span class="icon">❓</span>
+                    <span>Help & Guide</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="user-profile">
+                    <div class="user-avatar">SD</div>
+                    <div class="user-info">
+                        <span class="user-name">Loading...</span>
+                        <span class="user-role">Staff</span>
+                    </div>
+                </div>
+                <button id="btnLogout" class="btn-logout" title="Sign Out">🚪</button>
+            </div>
+        </aside>
+
+        <!-- Main Workspace -->
+        <main class="main-wrapper">
+            <header class="top-header">
+                <div class="page-title">
+                    <h2>Staff Help & User Manual</h2>
+                    <p>Standard operating procedures (SOP) and clinical system guidelines.</p>
+                </div>
+            </header>
+
+            <div class="content-body">
+                <div class="card">
+                    <h3 class="card-title" style="color:#0284c7;margin-bottom:16px;">📖 Welcome to Sunrise Dental Clinic System</h3>
+                    <p style="color:#475569;margin-bottom:20px;line-height:1.7;">
+                        This distributed web application is designed to replace manual paper logs at Sunrise Dental Clinic, Colombo.
+                        It automates patient intake, double-booking prevention, automated sequential referencing, procedure billing, and reporting.
+                    </p>
+
+                    <div class="grid-cols-2" style="gap:24px;">
+                        <!-- Section 1 -->
+                        <div style="background:#f8fafc;padding:20px;border-radius:var(--radius-md);border:1px solid #e2e8f0;">
+                            <h4 style="color:#0f172a;margin-bottom:10px;">1. User Roles & Security</h4>
+                            <ul style="padding-left:20px;color:#475569;font-size:0.9rem;line-height:1.6;">
+                                <li><strong>ADMIN:</strong> Unrestricted access to reports, master catalogs, and user administration.</li>
+                                <li><strong>RECEPTIONIST:</strong> Front-desk operations (patient booking, searching, invoicing).</li>
+                                <li><strong>DENTIST:</strong> Clinical schedule reviews and patient treatment execution.</li>
+                                <li>All passwords are encrypted with industry-standard <strong>BCrypt</strong> hashing.</li>
+                            </ul>
+                        </div>
+
+                        <!-- Section 2 -->
+                        <div style="background:#f8fafc;padding:20px;border-radius:var(--radius-md);border:1px solid #e2e8f0;">
+                            <h4 style="color:#0f172a;margin-bottom:10px;">2. Booking an Appointment</h4>
+                            <ul style="padding-left:20px;color:#475569;font-size:0.9rem;line-height:1.6;">
+                                <li>Navigate to <strong>New Appointment</strong>.</li>
+                                <li>Enter patient name, address, and mobile number.</li>
+                                <li>Select the appropriate Dentist and Treatment procedure.</li>
+                                <li>Pick a date (future/today) and time between <strong>08:00 and 17:00</strong>.</li>
+                                <li>The system generates a unique reference (e.g. <code>SDC-2026-0001</code>).</li>
+                            </ul>
+                        </div>
+
+                        <!-- Section 3 -->
+                        <div style="background:#f8fafc;padding:20px;border-radius:var(--radius-md);border:1px solid #e2e8f0;">
+                            <h4 style="color:#0f172a;margin-bottom:10px;">3. Searching & Managing Appointments</h4>
+                            <ul style="padding-left:20px;color:#475569;font-size:0.9rem;line-height:1.6;">
+                                <li>Navigate to <strong>Search & Manage</strong>.</li>
+                                <li>Enter the appointment reference (e.g., <code>SDC-2026-0001</code>).</li>
+                                <li>View patient, doctor, and treatment information.</li>
+                                <li>You can quickly jump to billing or cancel scheduled visits.</li>
+                            </ul>
+                        </div>
+
+                        <!-- Section 4 -->
+                        <div style="background:#f8fafc;padding:20px;border-radius:var(--radius-md);border:1px solid #e2e8f0;">
+                            <h4 style="color:#0f172a;margin-bottom:10px;">4. Invoicing & Printable Receipts</h4>
+                            <ul style="padding-left:20px;color:#475569;font-size:0.9rem;line-height:1.6;">
+                                <li>Navigate to <strong>Billing & Receipts</strong>.</li>
+                                <li>Retrieve the appointment and enter any promotional discount (0-100%).</li>
+                                <li>Formula: $\text{Total} = \text{Dentist Fee} + \text{Treatment Cost} - \text{Discount}$.</li>
+                                <li>Click <em>Issue Official Invoice</em>.</li>
+                                <li>Click <em>Print Patient Receipt</em> for a clean physical or PDF receipt.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- System Diagnostics / Support -->
+                    <div style="margin-top:24px;padding:16px;background:#e0f2fe;border-radius:var(--radius-md);border:1px solid #bae6fd;color:#0369a1;font-size:0.875rem;">
+                        <strong>Technical Support Contact:</strong> For system issues, database connectivity diagnostics, or staff account recovery, contact IT Support at <code>support@sunrisedental.lk</code> or extension <code>101</code>.
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const user = await Auth.requireAuth();
+        });
+    </script>
+</body>
+</html>
