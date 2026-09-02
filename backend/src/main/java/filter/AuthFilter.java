@@ -31,7 +31,8 @@ public class AuthFilter implements Filter {
 
     // Public endpoints that do not require authentication
     private static final List<String> PUBLIC_ENDPOINTS = Arrays.asList(
-            "/api/login"
+            "/api/login",
+            "/api/session"
     );
 
     @Override

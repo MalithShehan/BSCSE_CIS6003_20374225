@@ -33,8 +33,9 @@ const API = {
                 result = { success: false, message: `Server error (${response.status})`, data: null };
             }
 
-            // If session expired and trying to access protected endpoint
-            if (response.status === 401 && !endpoint.includes('/login')) {
+            // If session expired and trying to access protected endpoint from a protected page
+            const isLoginPage = window.location.pathname.endsWith('login.html') || window.location.pathname === '' || window.location.pathname.endsWith('/sunrise-dental-clinic/');
+            if (response.status === 401 && !endpoint.includes('/login') && !endpoint.includes('/session') && !isLoginPage) {
                 window.location.href = 'login.html?expired=true';
                 return { success: false, message: 'Session expired. Please log in again.' };
             }

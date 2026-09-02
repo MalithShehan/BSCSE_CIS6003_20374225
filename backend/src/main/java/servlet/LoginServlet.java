@@ -33,7 +33,7 @@ public class LoginServlet extends HttpServlet {
         PrintWriter out = response.getWriter();
 
         try {
-            JsonObject jsonRequest = JsonUtil.fromJson(request.getReader(), JsonObject.class);
+            JsonObject jsonRequest = JsonUtil.fromJson(request, JsonObject.class);
             if (jsonRequest == null || !jsonRequest.has("username") || !jsonRequest.has("password")) {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 out.print(JsonUtil.toJson(ApiResponse.error("Username and password are required.")));

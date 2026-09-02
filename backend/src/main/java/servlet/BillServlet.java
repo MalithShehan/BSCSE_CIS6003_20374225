@@ -89,7 +89,7 @@ public class BillServlet extends HttpServlet {
         PrintWriter out = response.getWriter();
 
         try {
-            JsonObject json = JsonUtil.fromJson(request.getReader(), JsonObject.class);
+            JsonObject json = JsonUtil.fromJson(request, JsonObject.class);
             if (json == null || !json.has("appointmentId")) {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 out.print(JsonUtil.toJson(ApiResponse.error("appointmentId is required to generate bill.")));

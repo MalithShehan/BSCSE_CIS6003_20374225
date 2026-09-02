@@ -412,15 +412,15 @@ ORDER BY total_revenue_generated DESC, successful_treatments DESC;
 
 -- Seed Users
 -- Passwords BCrypt hashed (Cost factor 12 / standard jBCrypt format):
--- 1. admin / Admin@123         -> $2a$12$e8Yk1m3YqL4aO5X9o7VHQeG6vD5r8x8P1gM7lM1lB7xY.9X0K3Wym
--- 2. receptionist / Reception@123 -> $2a$12$NqB8gZkFpG0/iIomJt1M5eKjO4z7mQ8bH4h2G2LqB9j8sD2tYmH.S
--- 3. dentist / Dentist@123       -> $2a$12$R9Z0x1y2z3a4b5c6d7e8f.O4j7M9c8N8n4G2LqB9j8sD2tYmH.S
+-- 1. admin / Admin@123         -> $2a$12$YIISMs2ksqn4SDe7M1Knxupgst5cPJiH1TnsYntnYyxpbG8Ep0YGq
+-- 2. receptionist / Reception@123 -> $2a$12$1QN15JbbEHvB0t3qP8d2pOVFXJ3Y4lAaUQhh8BmrxqgjpcbgAWDmC
+-- 3. dentist / Dentist@123       -> $2a$12$oV240dKL1ZHTLK5U024uOuvnWPkI0NilIguX0gHj0EWH3VBbED1qm
 
 INSERT INTO users (user_id, username, password_hash, full_name, role, is_active) VALUES
-(1, 'admin', '$2a$12$e8Yk1m3YqL4aO5X9o7VHQeG6vD5r8x8P1gM7lM1lB7xY.9X0K3Wym', 'Dr. Aruni Perera (Director)', 'ADMIN', TRUE),
-(2, 'receptionist', '$2a$12$NqB8gZkFpG0/iIomJt1M5eKjO4z7mQ8bH4h2G2LqB9j8sD2tYmH.S', 'Kasun Fernando (Front Desk)', 'RECEPTIONIST', TRUE),
-(3, 'dentist', '$2a$12$R9Z0x1y2z3a4b5c6d7e8f.O4j7M9c8N8n4G2LqB9j8sD2tYmH.S', 'Dr. Ruwan Silva (Senior Dental Surgeon)', 'DENTIST', TRUE),
-(4, 'dentist_nimal', '$2a$12$R9Z0x1y2z3a4b5c6d7e8f.O4j7M9c8N8n4G2LqB9j8sD2tYmH.S', 'Dr. Nimal Senanayake (Orthodontist)', 'DENTIST', TRUE);
+(1, 'admin', '$2a$12$YIISMs2ksqn4SDe7M1Knxupgst5cPJiH1TnsYntnYyxpbG8Ep0YGq', 'Dr. Aruni Perera (Director)', 'ADMIN', TRUE),
+(2, 'receptionist', '$2a$12$1QN15JbbEHvB0t3qP8d2pOVFXJ3Y4lAaUQhh8BmrxqgjpcbgAWDmC', 'Kasun Fernando (Front Desk)', 'RECEPTIONIST', TRUE),
+(3, 'dentist', '$2a$12$oV240dKL1ZHTLK5U024uOuvnWPkI0NilIguX0gHj0EWH3VBbED1qm', 'Dr. Ruwan Silva (Senior Dental Surgeon)', 'DENTIST', TRUE),
+(4, 'dentist_nimal', '$2a$12$oV240dKL1ZHTLK5U024uOuvnWPkI0NilIguX0gHj0EWH3VBbED1qm', 'Dr. Nimal Senanayake (Orthodontist)', 'DENTIST', TRUE);
 
 -- Seed Dentists
 INSERT INTO dentists (dentist_id, user_id, dentist_name, specialization, consultation_fee, contact_number, is_active) VALUES

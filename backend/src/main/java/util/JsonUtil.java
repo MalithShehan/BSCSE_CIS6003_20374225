@@ -69,10 +69,28 @@ public class JsonUtil {
     }
 
     /**
-     * Converts a JSON Reader (e.g. from HttpServletRequest.getReader()) to a typed Java object.
+     * Reads the entire body from HttpServletRequest into a String.
      */
-    public static <T> T fromJson(java.io.Reader reader, Class<T> classOfT) {
-        return GSON.fromJson(reader, classOfT);
+    public static String readBody(jakarta.servlet.http.HttpServletRequest request) throws java.io.IOException {
+        StringBuilder sb = new StringBuilder();
+        try (java.io.BufferedReader reader = request.getReader()) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                sb.append(line);
+            }
+        }
+        return sb.toString().trim();
+    }
+
+    /**
+     * Parses JSON directly from HttpServletRequest body.
+     */
+    public static <T> T fromJson(jakarta.servlet.http.HttpServletRequest request, Class<T> classOfT) throws java.io.IOException {
+        String body = readBody(request);
+        if (body.isEmpty()) {
+            return null;
+        }
+        return GSON.fromJson(body, classOfT);
     }
 
     public static Gson getGson() {

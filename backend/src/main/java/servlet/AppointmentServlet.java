@@ -91,7 +91,7 @@ public class AppointmentServlet extends HttpServlet {
         PrintWriter out = response.getWriter();
 
         try {
-            JsonObject json = JsonUtil.fromJson(request.getReader(), JsonObject.class);
+            JsonObject json = JsonUtil.fromJson(request, JsonObject.class);
             if (json == null) {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 out.print(JsonUtil.toJson(ApiResponse.error("Request payload cannot be empty.")));
@@ -165,7 +165,7 @@ public class AppointmentServlet extends HttpServlet {
         PrintWriter out = response.getWriter();
 
         try {
-            JsonObject json = JsonUtil.fromJson(request.getReader(), JsonObject.class);
+            JsonObject json = JsonUtil.fromJson(request, JsonObject.class);
             if (json == null || !json.has("appointmentId") || !json.has("status")) {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 out.print(JsonUtil.toJson(ApiResponse.error("appointmentId and status are required.")));
