@@ -68,6 +68,13 @@ public class JsonUtil {
         return GSON.fromJson(json, classOfT);
     }
 
+    /**
+     * Converts a JSON Reader (e.g. from HttpServletRequest.getReader()) to a typed Java object.
+     */
+    public static <T> T fromJson(java.io.Reader reader, Class<T> classOfT) {
+        return GSON.fromJson(reader, classOfT);
+    }
+
     public static Gson getGson() {
         return GSON;
     }
