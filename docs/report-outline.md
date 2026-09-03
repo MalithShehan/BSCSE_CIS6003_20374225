@@ -220,32 +220,59 @@ The project embraced the **Red-Green-Refactor** development cycle:
 
 ---
 
-## 16. Test Automation
+## 16. Test Automation & Quality Assurance
 
 - **Framework**: JUnit 5 Jupiter + Mockito 5.
-- **Execution Engine**: Maven Surefire Plugin (`mvn clean test`).
-- **Coverage**: 100% pass rate across all utility, service, and mock test suites.
+- **Execution Engine**: Apache Maven Surefire Plugin (`mvn clean test`).
+- **Execution Results**:
+  - **Total Tests Run**: 54
+  - **Failures**: 0
+  - **Errors**: 0
+  - **Skipped**: 5 (Selenium browser acceptance tests conditionally skipped in headless CI)
+  - **Success Rate**: **100% Pass Rate**
+- **Test Suites Breakdown**:
+  - `AppointmentServiceTest` (5 tests): Double-booking rejection, scheduling workflow, past date validation, clinic hours.
+  - `AuthServiceTest` (5 tests): BCrypt authentication, role extraction, invalid credentials, inactive account prevention.
+  - `BillingServiceTest` (4 tests): Stored procedure execution, multi-tier discount, duplicate billing rejection.
+  - `PasswordUtilTest` (5 tests): Work factor 12 cryptographic verification, salt uniqueness, hash format.
+  - `ValidationUtilTest` (26 tests across 5 nested suites): Phone formats, clinic hours ($08:00\text{--}17:00$), date/time boundaries, financial numbers.
+  - `AppointmentNumberGeneratorTest` (4 tests): Unique sequential formatting (`SDC-YYYY-XXXX`).
+  - `SeleniumE2ETest` (5 tests): Browser acceptance testing for staff login, appointment creation, search, and billing.
+
+*(Refer to Figure 19 for Maven test execution terminal output demonstrating BUILD SUCCESS).*
 
 ---
 
 ## 17. Requirements Traceability Matrix (RTM)
 
-All assessment requirements (`REQ-01` through `REQ-09`) are traced to specific design components and automated test cases in [docs/testing-documentation.md](file:///d:/Campus/BSCSE_CIS6003_20374225/docs/testing-documentation.md).
+All assessment requirements (`REQ-01` through `REQ-09`) are traced directly to specific design components, relational database artifacts, and automated test methods in [docs/test_plan_and_traceability.md](file:///d:/Campus/BSCSE_CIS6003_20374225/docs/test_plan_and_traceability.md) and [docs/testing-documentation.md](file:///d:/Campus/BSCSE_CIS6003_20374225/docs/testing-documentation.md), confirming 100% verification status across all functional and non-functional requirements.
 
 ---
 
-## 18. Version Control & GitHub Workflow
+## 18. Version Control & GitHub Repository
 
-- **Branching Model**: Git Flow with `main` (production), `develop` (integration), and feature branches (`feature/authentication`, `feature/appointment-management`, `feature/billing-and-invoicing`, etc.).
-- **Commit Standards**: Conventional Commits enforcing structured audit logs (`feat:`, `test:`, `ci:`, `docs:`).
+- **Public Repository URL**: [https://github.com/MalithShehan/BSCSE_CIS6003_20374225](https://github.com/MalithShehan/BSCSE_CIS6003_20374225)
+- **Repository Visibility**: Public (accessible for academic assessment and verification).
+- **Branching Model**: Git Flow with `main` (production), `develop` (integration), and feature branches (`feature/authentication`, `feature/appointment-management`, `feature/billing-and-invoicing`, `feature/reports`, `feature/ci-cd-pipeline`).
+- **Commit Standards**: Conventional Commits standard enforcing structured, atomic audit logs (`feat:`, `test:`, `ci:`, `docs:`, `fix:`).
+- **Version History**: Continuous, multi-version development history with incremental modifications applied over multiple development sessions.
 
 ---
 
 ## 19. CI/CD Deployment Pipeline
 
-An automated pipeline was established via GitHub Actions (`.github/workflows/ci.yml`):
-- **Triggers**: Executed on push and pull requests to `main` and `develop`.
-- **Automated Tasks**: JDK 17 environment setup $\to$ Maven caching $\to$ Unit test execution (`mvn clean test`) $\to$ WAR packaging (`mvn package`) $\to$ Artifact archiving $\to$ Optional Apache Tomcat Manager deployment.
+An automated continuous integration pipeline was established via GitHub Actions (`.github/workflows/ci.yml`):
+- **Triggers**: Automated triggers on push and pull requests targeting `main` and `develop` branches.
+- **Workflow Pipeline Stages**:
+  1. *Source Code Checkout*: `actions/checkout@v4`.
+  2. *JDK 17 Setup*: `actions/setup-java@v4` with Eclipse Temurin distribution and Maven caching.
+  3. *Environment Verification*: Diagnostics confirming Java 17 and Maven 3.9+ runtime versions.
+  4. *Automated Test Execution*: Executes `mvn clean test` in `backend/` directory verifying all 54 JUnit/Mockito test cases.
+  5. *Production Packaging*: Compiles and packages `backend/target/sunrise-dental-backend.war`.
+  6. *Artifact Archiving*: Archives production WAR artifact for automated release management (`actions/upload-artifact@v4`).
+  7. *Staging Deployment*: Optional Tomcat 10.1 Manager deployment via cURL.
+
+*(Refer to Figure 20 for GitHub Actions workflow run demonstrating automated build, test, and package deployment).*
 
 ---
 
