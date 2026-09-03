@@ -35,16 +35,18 @@ jobs:
           mvn -version
 
       - name: 4. Execute Automated JUnit 5 & Mockito Tests
+        working-directory: backend
         run: mvn clean test
 
       - name: 5. Package WAR Web Application
+        working-directory: backend
         run: mvn package -DskipTests
 
       - name: 6. Archive Production WAR Artifact
         uses: actions/upload-artifact@v4
         with:
           name: sunrise-dental-clinic-war
-          path: target/sunrise-dental-clinic.war
+          path: backend/target/sunrise-dental-backend.war
           retention-days: 14
 
   # ==============================================================================
@@ -72,6 +74,6 @@ jobs:
           TOMCAT_PASSWORD: ${{ secrets.TOMCAT_PASSWORD }}
         run: |
           echo "Initiating automated deployment to Tomcat 10.1 Manager..."
-          curl --upload-file target/sunrise-dental-clinic.war \
+          curl --upload-file target/sunrise-dental-backend.war \
             "http://${TOMCAT_USERNAME}:${TOMCAT_PASSWORD}@${TOMCAT_HOST}/manager/text/deploy?path=/sunrise-dental-clinic&update=true"
           echo "Deployment command sent successfully."
