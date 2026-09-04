@@ -58,7 +58,7 @@ jobs:
     name: Deploy to Apache Tomcat Server
     needs: build-and-test
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push' && secrets.TOMCAT_HOST != ''
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
 
     steps:
       - name: 1. Download Packaged WAR Artifact
@@ -68,13 +68,15 @@ jobs:
           path: target
 
       - name: 2. Deploy WAR to Remote Tomcat via Manager API
-        # Only runs if Tomcat secrets are provided in GitHub Repository Settings
-        if: env.TOMCAT_HOST != '' && env.TOMCAT_USERNAME != ''
         env:
           TOMCAT_HOST: ${{ secrets.TOMCAT_HOST }}
           TOMCAT_USERNAME: ${{ secrets.TOMCAT_USERNAME }}
           TOMCAT_PASSWORD: ${{ secrets.TOMCAT_PASSWORD }}
         run: |
+          if [ -z "$TOMCAT_HOST" ] || [ -z "$TOMCAT_USERNAME" ]; then
+            echo "Tomcat deployment secrets not configured in GitHub repository settings. Skipping remote deployment."
+            exit 0
+          fi
           echo "Initiating automated deployment to Tomcat 10.1 Manager..."
           curl --upload-file target/sunrise-dental-backend.war \
             "http://${TOMCAT_USERNAME}:${TOMCAT_PASSWORD}@${TOMCAT_HOST}/manager/text/deploy?path=/sunrise-dental-clinic&update=true"
