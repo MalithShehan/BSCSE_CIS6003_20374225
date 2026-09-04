@@ -17,9 +17,9 @@ import java.util.logging.Logger;
  * Features:
  * 1. Automatic loading of MySQL 8 Connector/J driver.
  * 2. Multi-tier configuration lookup:
- *    - Priority 1: Environment variables (DB_URL, DB_USER, DB_PASSWORD)
- *    - Priority 2: db.properties file in classpath
- *    - Priority 3: Default Java constants (fallback)
+ * - Priority 1: Environment variables (DB_URL, DB_USER, DB_PASSWORD)
+ * - Priority 2: db.properties file in classpath
+ * - Priority 3: Default Java constants (fallback)
  * 3. Connection factory method for standard JDBC DAO try-with-resources blocks.
  */
 public class DatabaseConnection {
@@ -30,7 +30,7 @@ public class DatabaseConnection {
     private static final String DEFAULT_DRIVER = "com.mysql.cj.jdbc.Driver";
     private static final String DEFAULT_URL = "jdbc:mysql://localhost:3306/sunrise_dental_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&characterEncoding=UTF-8";
     private static final String DEFAULT_USER = "root";
-    private static final String DEFAULT_PASSWORD = "";
+    private static final String DEFAULT_PASSWORD = "Malith@1001";
 
     // Configuration Properties
     private String driver;
@@ -50,7 +50,8 @@ public class DatabaseConnection {
     }
 
     /**
-     * Returns the global Singleton instance of DatabaseConnection with double-checked locking.
+     * Returns the global Singleton instance of DatabaseConnection with
+     * double-checked locking.
      *
      * @return DatabaseConnection singleton instance
      */
@@ -66,7 +67,8 @@ public class DatabaseConnection {
     }
 
     /**
-     * Loads connection settings from environment variables, db.properties, or constants.
+     * Loads connection settings from environment variables, db.properties, or
+     * constants.
      */
     private void loadConfiguration() {
         Properties props = new Properties();
